@@ -6,7 +6,9 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gitlab.bd.com/new-argos-be/cmd/api/handlers"
+	middlewares "gitlab.bd.com/new-argos-be/cmd/api/middlware"
 	"gitlab.bd.com/new-argos-be/common"
 )
 
@@ -36,7 +38,8 @@ func main() {
 		server:  e,
 		handler: h,
 	}
-
+	e.Use(middleware.Logger())
+	e.Use(middlewares.CustomMiddleware)
 	app.routes(h)
 
 	port := os.Getenv("APP_PORT")
