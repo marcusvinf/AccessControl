@@ -22,7 +22,7 @@ func main() {
 	e := echo.New()
 	err := godotenv.Load()
 	if err != nil {
-		e.Logger.Fatal("Error loading the file")
+		e.Logger.Fatal(err.Error())
 	}
 	db, err := common.NewDB()
 	if err != nil {
@@ -40,6 +40,9 @@ func main() {
 	}
 	e.Use(middleware.Logger())
 	e.Use(middlewares.CustomMiddleware)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"}, AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept}}))
+	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{TokenLookup: "header:X-XSRF-TOKEN"}))
 	app.routes(h)
 
 	port := os.Getenv("APP_PORT")

@@ -14,7 +14,7 @@ func NewDB() (*gorm.DB, error) {
 	err := godotenv.Load()
 
 	if err != nil {
-		panic("Error loading the file")
+		return nil, err
 	}
 
 	dbHost := os.Getenv("DB_HOST")
