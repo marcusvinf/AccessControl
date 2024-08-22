@@ -6,5 +6,5 @@ import (
 
 func (a *Application) routes(handler handlers.Handler) {
 	a.server.GET("/", handler.HealthCheck)
-
+	a.server.POST("/register-terminal", handler.RegisterHandler)
 }

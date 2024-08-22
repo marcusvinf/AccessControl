@@ -23,6 +23,4 @@ func main() {
 		panic(err)
 
 	}
-	// db.Migrator().CreateConstraint(&models.PersonTerminal{}, "Person")
-	// db.Migrator().CreateConstraint(&models.PersonTerminal{}, "Terminal")
 }
