@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -16,7 +15,6 @@ func (v *Handler) RegisterHandler(c echo.Context) error {
 		c.Logger().Error("Failed to read request body:", err)
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	c.Logger().Infof("Raw request body: %s", string(body))
 
 	payload := new(requests.RegisterPersonRequest)
 	if err := json.Unmarshal(body, payload); err != nil {
@@ -25,8 +23,11 @@ func (v *Handler) RegisterHandler(c echo.Context) error {
 	}
 
 	c.Logger().Infof("Received payload: %+v", payload)
-	validationErrors := v.ValidaBodyRequest(c, *payload)
-	fmt.Println(&validationErrors)
+	validationErrors := v.ValidateBodyRequest(c, *payload)
 
-	return c.String(http.StatusBadRequest, "validation errors")
+	if validationErrors != nil {
+		return c.JSON(http.StatusOK, validationErrors)
+	}
+
+	return c.JSON(http.StatusOK, validationErrors)
 }

@@ -6,7 +6,7 @@ import (
 
 type RegisterPersonRequest struct {
 	Name     string    `json:"name" validate:"required"`
-	Photo    []byte    `json:"photo" validate:"required"`
+	Photo    string    `json:"photo" validate:"required"`
 	Valid    time.Time `json:"valid" validate:"required"`
 	Notes    string    `json:"notes" validate:"required"`
 	Password string    `json:"password" validate:"required"`
