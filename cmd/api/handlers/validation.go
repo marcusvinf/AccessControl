@@ -6,17 +6,12 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"gitlab.bd.com/new-argos-be/common"
 )
 
-type ValidationErrors struct {
-	Error     string `json:"error"`
-	Key       string `json:"key"`
-	Condition string `json:"condition"`
-}
-
-func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*ValidationErrors {
+func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*common.ValidationErrors {
 	validate := validator.New(validator.WithRequiredStructEnabled())
-	var errors []*ValidationErrors
+	var errors []*common.ValidationErrors
 	err := validate.Struct(payload)
 	validationErrors, ok := err.(validator.ValidationErrors)
 	if ok {
@@ -31,7 +26,7 @@ func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*Validation
 			condition := validationErr.Tag()
 			keyToTitleCase := strings.Replace(key, "_", " ", -1)
 			errMessage := keyToTitleCase + " field is " + condition
-			currentValidationError := &ValidationErrors{
+			currentValidationError := &common.ValidationErrors{
 				Error:     errMessage,
 				Key:       keyToTitleCase,
 				Condition: condition,

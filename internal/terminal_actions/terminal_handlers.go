@@ -13,5 +13,6 @@ func (t *TerminalData) PersonToTerminal(img []byte) error {
 		fmt.Println(err)
 	}
 	fmt.Println(test)
+	fmt.Println(timeFormat)
 	return nil
 }
