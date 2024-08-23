@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"gitlab.bd.com/new-argos-be/cmd/api/handlers"
 	middlewares "gitlab.bd.com/new-argos-be/cmd/api/middlware"
 	"gitlab.bd.com/new-argos-be/common"
@@ -20,6 +21,7 @@ type Application struct {
 
 func main() {
 	e := echo.New()
+	e.Logger.SetLevel(log.INFO)
 	err := godotenv.Load()
 	if err != nil {
 		e.Logger.Fatal(err.Error())
@@ -42,7 +44,7 @@ func main() {
 	e.Use(middlewares.CustomMiddleware)
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"}, AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept}}))
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{TokenLookup: "header:X-XSRF-TOKEN"}))
+	// e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{TokenLookup: "header:X-XSRF-TOKEN"}))
 	app.routes(h)
 
 	port := os.Getenv("APP_PORT")
