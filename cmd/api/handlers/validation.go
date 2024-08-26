@@ -33,13 +33,6 @@ func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*common.Val
 			}
 			errors = append(errors, currentValidationError)
 		}
-		// return errors
 	}
-	// currentValidationError := &ValidationErrors{
-	// 	Error:     "",
-	// 	Key:       "",
-	// 	Condition: "",
-	// }
-	// errors = append(errors, currentValidationError)
 	return errors
 }

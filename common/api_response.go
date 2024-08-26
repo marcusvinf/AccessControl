@@ -13,13 +13,13 @@ type ValidationErrors struct {
 }
 
 type JSONSuccessResponse struct {
-	Success bool   `json:"sucess"`
+	Success bool   `json:"success"`
 	Message string `json:"message"`
 	Data    any    `json:"data"`
 }
 
 type JSONFailedValidationResult struct {
-	Success bool                `json:"sucess"`
+	Success bool                `json:"success"`
 	Message string              `json:"message"`
 	Errors  []*ValidationErrors `json:"errors"`
 }
