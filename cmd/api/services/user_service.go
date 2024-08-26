@@ -22,8 +22,9 @@ func (u UserService) RegisterTerminal(terminalRequest *requests.RegisterTerminal
 	hashedPassword, err := common.HashPassword(terminalRequest.Password)
 	if err != nil {
 		fmt.Println(err)
-		return nil, errors.New("User registration failed")
+		return nil, errors.New("user registration failed")
 	}
+	fmt.Println(hashedPassword)
 	return nil, nil
 }
 
@@ -36,13 +37,35 @@ func (u UserService) GetTerminalByIp(ipv4 string) (*models.Terminal, error) {
 	return &terminal, nil
 }
 
+func (u UserService) GetLocalByName(name string) (*models.Local, error) {
+	var local models.Local
+	result := u.db.Where("lower(name) = lower(?)", name).First(&local)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &local, nil
+}
+
 func (u UserService) GetAllLocations() (*[]models.Local, error) {
 	var locations []models.Local
 	results := u.db.Find(&locations)
+	fmt.Println(results)
 
 	if results.Error != nil {
 		return nil, results.Error
 	}
 	return &locations, nil
 
+}
+
+func (u UserService) RegisterLocal(localRequest *requests.RegisterLocalRequest) (*models.Local, error) {
+	createdLocal := models.Local{
+		Name: localRequest.Name,
+	}
+	result := u.db.Create(&createdLocal)
+	if result.Error != nil {
+		return nil, errors.New("registro de local falhou")
+	}
+
+	return &createdLocal, nil
 }

@@ -8,9 +8,9 @@ import (
 )
 
 type Local struct {
-	LocalID   uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	Name      string     `gorm:"type:varchar(100);not null"`
-	Terminals []Terminal `gorm:"foreignKey:LocalID;"`
+	LocalID   uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"local_id"`
+	Name      string     `gorm:"type:varchar(100);not null" json:"local_name"`
+	Terminals []Terminal `gorm:"foreignKey:LocalID;" json:"-"`
 }
 
 type Person struct {

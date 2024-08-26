@@ -2,6 +2,8 @@ package requests
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type RegisterPersonRequest struct {
@@ -23,4 +25,13 @@ type RegisterTerminalRequest struct {
 	IPv4     string `json:"ipv4" validate:"required"`
 	Password string `json:"password" validate:"required"`
 	Username string `json:"username" validate:"required"`
+}
+
+type RegisterLocalRequest struct {
+	Name string `json:"name" validate:"required"`
+}
+
+type RegisterLocalResponse struct {
+	Name    string    `json:"local_name"`
+	LocalID uuid.UUID `json:"local_id"`
 }
