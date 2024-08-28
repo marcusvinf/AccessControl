@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/labstack/echo/v4"
@@ -15,7 +16,7 @@ import (
 func (v *Handler) RegisterTerminalHandler(c echo.Context) error {
 	userService := services.NewUserService(v.DB)
 	_, err := userService.GetAllLocations()
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return common.SendBadRequestResponse(c, "Nenhuma localidade cadastradada!")
 	}
 	body, err := io.ReadAll(c.Request().Body)
@@ -39,10 +40,13 @@ func (v *Handler) RegisterTerminalHandler(c echo.Context) error {
 
 	terminalExists, err := userService.GetTerminalByIp(payload.IPv4)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return common.SendBadRequestResponse(c, "Ipv4 já cadastrado!")
+		return common.SendBadRequestResponse(c, fmt.Sprintf("IPv4 já registrado, terminal de Nome %s", terminalExists.Name))
 	}
-	print(terminalExists)
-	userService.RegisterTerminal(payload)
+	localId, err := userService.GetLocalByName(payload.LocalName)
+	if err != nil {
+		return common.SendBadRequestResponse(c, err.Error())
+	}
+	userService.RegisterTerminal(payload, localId.LocalID)
 	return common.SendSuccessResponse(c, "Terminal registrado com sucesso", nil)
 }
 

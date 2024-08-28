@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
+	"github.com/google/uuid"
 	"gitlab.bd.com/new-argos-be/cmd/api/requests"
 	"gitlab.bd.com/new-argos-be/common"
 	"gitlab.bd.com/new-argos-be/internal/models"
@@ -18,14 +18,25 @@ func NewUserService(db *gorm.DB) *UserService {
 	return &UserService{db: db}
 }
 
-func (u UserService) RegisterTerminal(terminalRequest *requests.RegisterTerminalRequest) (*models.Terminal, error) {
+func (u UserService) RegisterTerminal(terminalRequest *requests.RegisterTerminalRequest, localID uuid.UUID) (*models.Terminal, error) {
 	hashedPassword, err := common.HashPassword(terminalRequest.Password)
 	if err != nil {
-		fmt.Println(err)
-		return nil, errors.New("user registration failed")
+		return nil, err
 	}
-	fmt.Println(hashedPassword)
-	return nil, nil
+	createdTerminal := models.Terminal{
+		Name:     terminalRequest.TerminalName,
+		IPv4:     terminalRequest.IPv4,
+		Username: terminalRequest.Username,
+		Password: hashedPassword,
+		Https:    *terminalRequest.Https,
+		LocalID:  localID,
+	}
+	result := u.db.Create(&createdTerminal)
+	if result.Error != nil {
+		return nil, errors.New("registro de local falhou")
+	}
+
+	return &createdTerminal, nil
 }
 
 func (u UserService) GetTerminalByIp(ipv4 string) (*models.Terminal, error) {
@@ -49,7 +60,6 @@ func (u UserService) GetLocalByName(name string) (*models.Local, error) {
 func (u UserService) GetAllLocations() (*[]models.Local, error) {
 	var locations []models.Local
 	results := u.db.Find(&locations)
-	fmt.Println(results)
 
 	if results.Error != nil {
 		return nil, results.Error
