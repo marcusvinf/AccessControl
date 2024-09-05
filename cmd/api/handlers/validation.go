@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -25,7 +27,20 @@ func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*common.Val
 			}
 			condition := validationErr.Tag()
 			keyToTitleCase := strings.Replace(key, "_", " ", -1)
+			param := validationErr.Param()
 			errMessage := keyToTitleCase + " field is " + condition
+			switch condition {
+			case "required":
+				errMessage = keyToTitleCase + " is required"
+			case "email":
+				errMessage = keyToTitleCase + " must be a valida email address"
+			case "min":
+				if _, err := strconv.Atoi(param); err == nil {
+					errMessage = fmt.Sprintf("%s must be at least %s characters", keyToTitleCase, param)
+				}
+			case "containsany":
+				errMessage = fmt.Sprintf("There needs to have at least %s", param)
+			}
 			currentValidationError := &common.ValidationErrors{
 				Error:     errMessage,
 				Key:       keyToTitleCase,

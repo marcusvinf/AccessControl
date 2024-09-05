@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+type RegisterUserRequest struct {
+	IsAdmin  bool   `json:"is_admin" validate:"required"`
+	Username string `json:"username" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,gt=12,containsany=uppercase,containsany=lowercase,containsany=numeric,containsany=!@#?_[]"`
+}
+
 type RegisterPersonRequest struct {
 	Register uint      `json:"matricula" validate:"required"`
 	Name     string    `json:"name" validate:"required"`

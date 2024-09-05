@@ -84,3 +84,23 @@ func (v *Handler) RegisterLocalHandler(c echo.Context) error {
 	}
 	return common.SendSuccessResponse(c, "Local registrado com sucesso", registeredLocal)
 }
+
+func (v *Handler) LoginHandler(c echo.Context) error {
+	body, err := io.ReadAll(c.Request().Body)
+	if err != nil {
+		c.Logger().Error("Falha ao ler corpo da requisicao:", err)
+		return common.SendBadRequestResponse(c, err.Error())
+	}
+
+	payload := new(requests.RegisterUserRequest)
+	if err := json.Unmarshal(body, payload); err != nil {
+		c.Logger().Error("Falha ao deserializar o corpo da requisicao:", err)
+		return common.SendBadRequestResponse(c, err.Error())
+	}
+
+	validationErrors := v.ValidateBodyRequest(c, *payload)
+
+	if validationErrors != nil {
+		return common.SendFailedValidationResponse(c, validationErrors)
+	}
+}

@@ -4,8 +4,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
+
+type User struct {
+	IsAdmin  bool   `gorm:"type:boolean;not null"`
+	Username string `gorm:"type:varchar(15)"`
+	Email    string `gorm:"type:varchar(320)"`
+	Password string `gorm:"type:varchar(255)"`
+}
 
 type Local struct {
 	LocalID   uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"local_id"`
@@ -44,7 +50,7 @@ type PersonTerminal struct {
 	TerminalID uuid.UUID `gorm:"type:uuid;not null"`
 	Person     Person    `gorm:"foreignKey:PersonID;references:PersonID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
 	Terminal   Terminal  `gorm:"foreignKey:TerminalID;references:TerminalID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
-	gorm.Model
+	BaseModel
 }
 
 func (Person) TableName() string {
