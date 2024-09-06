@@ -39,7 +39,7 @@ func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*common.Val
 					errMessage = fmt.Sprintf("%s must be at least %s characters", keyToTitleCase, param)
 				}
 			case "containsany":
-				errMessage = fmt.Sprintf("There needs to have at least %s", param)
+				errMessage = fmt.Sprintf("%s needs to have at least %s", keyToTitleCase, param)
 			}
 			currentValidationError := &common.ValidationErrors{
 				Error:     errMessage,

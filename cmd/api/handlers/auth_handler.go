@@ -86,21 +86,24 @@ func (v *Handler) RegisterLocalHandler(c echo.Context) error {
 }
 
 func (v *Handler) LoginHandler(c echo.Context) error {
-	body, err := io.ReadAll(c.Request().Body)
-	if err != nil {
-		c.Logger().Error("Falha ao ler corpo da requisicao:", err)
-		return common.SendBadRequestResponse(c, err.Error())
-	}
-
-	payload := new(requests.RegisterUserRequest)
-	if err := json.Unmarshal(body, payload); err != nil {
-		c.Logger().Error("Falha ao deserializar o corpo da requisicao:", err)
+	userService := services.NewUserService(v.DB)
+	payload := new(requests.LoginRequest)
+	if err := (&echo.DefaultBinder{}).BindBody(c, payload); err != nil {
+		c.Logger().Error(err)
 		return common.SendBadRequestResponse(c, err.Error())
 	}
 
 	validationErrors := v.ValidateBodyRequest(c, *payload)
-
 	if validationErrors != nil {
 		return common.SendFailedValidationResponse(c, validationErrors)
 	}
+	userRetrieved, err := userService.GetUserByUsername(payload.Username)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return common.SendBadRequestResponse(c, "Usuário ja cadastrado")
+	}
+
+	if !common.CheckPasswordHash(payload.Password, userRetrieved.Password) {
+		return common.SendBadRequestResponse(c, "Credenciais invalidas!")
+	}
+	return common.SendSuccessResponse(c, "Usuário logado!", userRetrieved)
 }

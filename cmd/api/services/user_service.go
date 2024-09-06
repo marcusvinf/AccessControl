@@ -39,6 +39,15 @@ func (u UserService) RegisterTerminal(terminalRequest *requests.RegisterTerminal
 	return &createdTerminal, nil
 }
 
+func (u UserService) GetUserByUsername(username string) (*models.User, error) {
+	var user models.User
+	result := u.db.Where("username = ?", username).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
 func (u UserService) GetTerminalByIp(ipv4 string) (*models.Terminal, error) {
 	var terminal models.Terminal
 	result := u.db.Where("ipv4 = ?", ipv4).First(&terminal)

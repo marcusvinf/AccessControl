@@ -4,6 +4,11 @@ import (
 	"time"
 )
 
+type LoginRequest struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required,gt=12,containsany=uppercase,containsany=lowercase,containsany=numeric,containsany=!@#?_[]"`
+}
+
 type RegisterUserRequest struct {
 	IsAdmin  bool   `json:"is_admin" validate:"required"`
 	Username string `json:"username" validate:"required"`
