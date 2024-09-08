@@ -7,10 +7,12 @@ import (
 )
 
 type User struct {
+	ID       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	IsAdmin  bool   `gorm:"type:boolean;not null" json:"is_admin"`
 	Username string `gorm:"type:varchar(15);not null;unique" json:"username"`
 	Email    string `gorm:"type:varchar(320);not null;unique" json:"email"`
 	Password string `gorm:"type:varchar(255);not null" json:"password"`
+	BaseModel
 }
 
 type Local struct {

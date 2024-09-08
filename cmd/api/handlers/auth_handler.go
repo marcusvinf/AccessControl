@@ -105,5 +105,14 @@ func (v *Handler) LoginHandler(c echo.Context) error {
 	if !common.CheckPasswordHash(payload.Password, userRetrieved.Password) {
 		return common.SendBadRequestResponse(c, "Credenciais invalidas!")
 	}
-	return common.SendSuccessResponse(c, "Usuário logado!", userRetrieved)
+
+	accessToken, refreshToken, err := common.GenerateJWT(*userRetrieved)
+	if err != nil {
+		return common.SendInternalServerErrorResponse(c, err.Error())
+	}
+	return common.SendSuccessResponse(c, "Usuário logado!", map[string]any{
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+		"user":          userRetrieved,
+	})
 }

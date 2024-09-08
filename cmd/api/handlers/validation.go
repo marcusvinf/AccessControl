@@ -33,7 +33,7 @@ func (v *Handler) ValidateBodyRequest(c echo.Context, payload any) []*common.Val
 			case "required":
 				errMessage = keyToTitleCase + " is required"
 			case "email":
-				errMessage = keyToTitleCase + " must be a valida email address"
+				errMessage = keyToTitleCase + " must be a valid email address"
 			case "min":
 				if _, err := strconv.Atoi(param); err == nil {
 					errMessage = fmt.Sprintf("%s must be at least %s characters", keyToTitleCase, param)
