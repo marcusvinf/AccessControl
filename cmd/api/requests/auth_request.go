@@ -1,9 +1,5 @@
 package requests
 
-import (
-	"time"
-)
-
 type LoginRequest struct {
 	Username string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required,gt=12,containsany=uppercase,containsany=lowercase,containsany=numeric,containsany=!@#?_[]"`
@@ -16,14 +12,19 @@ type RegisterUserRequest struct {
 	Password string `json:"password" validate:"required,gt=12,containsany=uppercase,containsany=lowercase,containsany=numeric,containsany=!@#?_[]"`
 }
 
-type RegisterPersonRequest struct {
-	Register uint      `json:"matricula" validate:"required"`
-	Name     string    `json:"name" validate:"required"`
-	Photo    string    `json:"photo" validate:"required"`
-	Notes    string    `json:"notes" validate:"required"`
-	Password string    `json:"password" validate:"required"`
-	DeviceID string    `json:"device_id" validate:"required"`
-	Valid    time.Time `json:"valid" validate:"required"`
+type RegisterPrePersonRequest struct {
+	Register uint   `json:"matricula"`
+	Name     string `json:"name" validate:"required"`
+	Photo    string `json:"photo" validate:"required"`
+	Notes    string `json:"notes"`
+	Password string `json:"password"`
+	DeviceID string `json:"device_id" validate:"required"`
+	Valid    string `json:"valid" validate:"required"`
+}
+
+type RegisterFullPersonRequest struct {
+	RegisterPrePersonRequest
+	TerminalNames []string `json:"terminal_names"`
 }
 
 type RegisterTerminalRequest struct {
